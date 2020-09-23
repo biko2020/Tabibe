@@ -6,7 +6,7 @@ abstract class Model {
   
 
     private $host = "localhost:3307";
-    private $db_name = "elctrostore";
+    private $db_name = "tabibe";
     private $username = "root";
     private $password = "";
     
