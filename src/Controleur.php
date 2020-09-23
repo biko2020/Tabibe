@@ -333,7 +333,7 @@ function afficher_Inscription() {
 
         }
 
-        $User_Session->getTableName("users");// envoyer le nom de la table users a notre fonction getTableName
+        $User_Session->getTableName("medecin");// envoyer le nom de la table users a notre fonction getTableName
         $User_Session->CreatUsers($nom,$email,$password);
             
             if($User_Session){
@@ -364,7 +364,7 @@ function afficher_Actionconnexion() {
     //$User_Session = $User_Session->session($email,$password);
 
         if($User_Session) {
-            $User_Session->getTableName("users");// envoyer le nom de la table users a notre fonction getTableName
+            $User_Session->getTableName("medecin");// envoyer le nom de la table users a notre fonction getTableName
             $data_user = $User_Session->session($email,$password);   // on recuperer notre session sur notre var $data_user 
             
             if($data_user) { // cas compte valide
