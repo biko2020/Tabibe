@@ -196,14 +196,19 @@ function afficher_InscriptionRendezVous() {
 
             $dte = $dte.$_toDay;
 
-            $obj_Data->getTableName("Patients"); // le nom de notre table Patients
+    
+            //$obj_Data->getTableName("rendezvouss");
+            $obj_Data->createRendezVous($dte,$heure);
+            $obj_Data->getTableName("Patients");// le nom de notre table Patients
+            $obj_Data->createPatient($nom,$prenom,$email,$gsm,$dte,$heure);
             
-            $obj_Data = $obj_Data->createPatient($nom,$prenom,$email,$gsm,$dte,$heure);
-
+           
+            
             if(!isset($obj_Data)==0){
-                
+
                 return '<br><br><h1>Votre Rendez-vous est confirmé: <br><br></h1><h4><a href="#">Consulte la liste des Rendez-vous </a></h4>';
             }else {
+
                 return '<h1 style="color:red;">Error 404 ....</h1>'.afficher_Rendezvous();
             }
 
@@ -214,8 +219,8 @@ function afficher_Fileattente() {
 
     global $obj_Data;
   
-        $obj_Data->getTableName("Patients"); // envoyer le nom de la table Patients a notre fonction getTableName  
-        $obj_Data = $obj_Data->getFileAttente();
+        $obj_Data->getTableName("rendezvous"); // envoyer le nom de la table rendezvous a notre fonction getTableName  
+        $obj_Data = $obj_Data->getRendezVous();
  
         $contenu= '<table class="table">                   
                     <thead class="thead-light">
@@ -393,7 +398,7 @@ function afficher_Actiondeconnexion() {
 
 function afficher_GestionFileAttente() {
     global $obj_Data;
-  
+          
         $obj_Data->getTableName("Patients"); // envoyer le nom de la table Patients a notre fonction getTableName  
         $obj_Data = $obj_Data->getFileAttente();
  
@@ -405,7 +410,9 @@ function afficher_GestionFileAttente() {
                             <th scope="col">Date Rendez-vous</th>
                             <th scope="col">Heure</th>
                             <th scope="col">E-mail</th>
-                            <th scope="col">GSM</th>                        
+                            <th scope="col">GSM</th>
+                            <th scope="col">Modifier</th>
+                            <th scope="col">Operation</th>                         
                         <tr>
                     </thead>
 
@@ -414,14 +421,16 @@ function afficher_GestionFileAttente() {
                 if( is_array($obj_Data)) { // ca concerne un tableau d'objet
                 
                     foreach($obj_Data as $key => $value) { //recupere les champs et leurs valeurs sur notre tableau
-                       
+                       $url = $value["idPatients"];
         $contenu.='     <tr>
                             <td scope="row">'.$value["nom"].'</td>
                             <td scope="row">'.$value["prenom"].'</td>
                             <td scope="row">'.$value["dte"].'</td>
                             <td scope="row">'.$value["heure"].'</td>
                             <td scope="row">'.$value["email"].'</td>
-                            <td scope="row">'.$value["gsm"].'</td>       
+                            <td scope="row">'.$value["gsm"].'</td> 
+                            <td><a href="'.BASE_URL.SP."modifier".SP.$value["idPatients"].'" class="btn btn-success">Modification</a></td>     
+                            <td><a href="'.BASE_URL.SP."supprimer".SP.$value["idPatients"].'" class="btn btn-danger">suppression</a></td>    
                         </tr>';
                    
                     } 
@@ -433,10 +442,142 @@ function afficher_GestionFileAttente() {
     return $contenu;
 
 }
+//function modification patients
+ function  afficher_modifier(){
+
+    global $obj_Data;
+    global $url;
+
+           $id = $url[1]; //recupere la deuxieme element de notre tableau (le code patients)
+           $obj_Data->getTableName("Patients");
+           $obj_Data = $obj_Data->selectPationById($id);
+
+    $contenu ='<div class="container"><br>
+
+                        <div class="col-6">
+                            <div class="bg-white shadow-sm rounded p-3">
+                                <form  action="updatepatient" method="post">';
+                                        if(is_array($obj_Data)){
+                                            foreach($obj_Data as $key => $value){
+    $contenu .='                           <div class="mb-4"><h2 class="h4">'.$value["nom"].': '. $value["prenom"].'</h2></div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="nom">Nom : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["age"].'" required=""  aria-label="Age">
+                                            </div>
+                                            </div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="profession">profession : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["profession"].'" required=""  aria-label="profession">
+                                            </div>
+                                            </div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="date">date rendez-vous : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["dte"].'" required=""  aria-label="date Rendez-vous">
+                                            </div>
+                                            </div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="heure">heure rendez-vous : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["heure"].'" required=""  aria-label="heure Rendez-vous">
+                                            </div>
+                                            </div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="gsm">N°GSM : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["gsm"].'" required=""  aria-label="heure Rendez-vous">
+                                            </div>
+                                            </div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="adresse">Adresse : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["adresse"].'" required=""  aria-label="heure Rendez-vous">
+                                            </div>
+                                            </div>
+                                            <div class=" mb-3">
+                                            <div class="input-group input-group form">
+                                            <label for="mutuelle">Mutuelle : </label>
+                                            <input type="text" name="nom" class="form-control " value="'.$value["mutuelle"].'" required=""  aria-label="heure Rendez-vous">
+                                            </div>
+                                            </div>
+                                            ';
+
+
+                                            }    
+                                        } 
+    $contenu .='                    <button type="submit" class="btn btn-primary ">Mettre a jour</button>
+                              </form>
+                            </div>
+                        </div>
+                    </div>
+               </div>';       
+
+   
+    return $contenu;
+
+ }
+// mettre a jour les infos d'un patient
+
+function afficher_Updatepatient() {
+
+    return '<h1>les informations Modifier avec succés<h1>';
+}
+
+//fonction supprimer un patients
+function afficher_supprimer() { 
+    global $obj_Data;
+    global $url;
+
+        $id = $url[1]; //recupere la deuxieme element de notre tableau (le code patients)
+        $obj_Data->getTableName("Patients");
+        $obj_Data = $obj_Data->deleteRendezVous($id);
+
+    return $obj_Data;
+
+}
+
 
 // *** fonction controle page contact ***
 function afficher_Contact() {
-    return "<h1>Contact</h1>";
+
+    $result= '<h1> Bienvenu au contact</h1>';
+
+    $result .='<div class="container contact">
+    <h1 class="text-center">Contactez-Nous !</h1>
+    <form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="inputEmail1">Nom : </label>
+              <input type="email" class="form-control" id="inputEmail1" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword2">Prenom : </label>
+              <input type="text" class="form-control" id="inputPassword2" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputAddress">Email : </label>
+            <input type="text" class="form-control" id="inputAddress" placeholder="" required>
+          </div>
+          <div class="form-group">
+            <label for="inputAddress2">Message : </label>
+            <textarea class="form-control" row="5" col="80" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="">
+              <label class="form-check-label" for="">
+                Se rappeler de moi
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success">Envoyer</button>
+        </form>';
+
+    return $result;
 }
 
 ?>
