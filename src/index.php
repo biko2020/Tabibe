@@ -11,7 +11,7 @@ $url = explode('/',$url);
 
 
 // notre route
-$route = array("Accueil", "Rendezvous", "Fileattente", "InscriptionRendezVous","Administration", "Inscription", "Actionconnexion", "Actiondeconnexion", "GestionFileAttente","Contact");
+$route = array("Accueil", "Rendezvous", "Fileattente", "InscriptionRendezVous","Administration", "Inscription", "Actionconnexion", "Actiondeconnexion", "GestionFileAttente", "modifier", "supprimer", "updatepatient", "Contact");
 
 
 $action = $url[0]; // notre action recupere le premier element de notre tableau
