@@ -447,80 +447,88 @@ function afficher_GestionFileAttente() {
 
     global $obj_Data;
     global $url;
+    global $Name, $profession, $age, $adresse, $gsm, $mutuelle, $dte, $heure;
 
            $id = $url[1]; //recupere la deuxieme element de notre tableau (le code patients)
            $obj_Data->getTableName("Patients");
            $obj_Data = $obj_Data->selectPationById($id);
 
-    $contenu ='<div class="container"><br>
+            if(is_array($obj_Data)) {
+                foreach($obj_Data as $key => $value) {
+                    
+                    $Name = ucwords($value["nom"]) .' : '.ucwords($value["prenom"]);
+                    $profession = $value["profession"];
+                    $age = $value["age"];
+                    $adresse = $value["adresse"];
+                    $gsm = $value["gsm"];
+                    $mutuelle = $value["mutuelle"];
+                    $dte = $value["dte"];
+                    $heure = $value["heure"];
 
-                        <div class="col-6">
-                            <div class="bg-white shadow-sm rounded p-3">
-                                <form  action="updatepatient" method="post">';
-                                        if(is_array($obj_Data)){
-                                            foreach($obj_Data as $key => $value){
-    $contenu .='                           <div class="mb-4"><h2 class="h4">'.$value["nom"].': '. $value["prenom"].'</h2></div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="nom">Nom : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["age"].'" required=""  aria-label="Age">
-                                            </div>
-                                            </div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="profession">profession : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["profession"].'" required=""  aria-label="profession">
-                                            </div>
-                                            </div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="date">date rendez-vous : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["dte"].'" required=""  aria-label="date Rendez-vous">
-                                            </div>
-                                            </div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="heure">heure rendez-vous : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["heure"].'" required=""  aria-label="heure Rendez-vous">
-                                            </div>
-                                            </div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="gsm">N°GSM : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["gsm"].'" required=""  aria-label="heure Rendez-vous">
-                                            </div>
-                                            </div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="adresse">Adresse : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["adresse"].'" required=""  aria-label="heure Rendez-vous">
-                                            </div>
-                                            </div>
-                                            <div class=" mb-3">
-                                            <div class="input-group input-group form">
-                                            <label for="mutuelle">Mutuelle : </label>
-                                            <input type="text" name="nom" class="form-control " value="'.$value["mutuelle"].'" required=""  aria-label="heure Rendez-vous">
-                                            </div>
-                                            </div>
-                                            ';
+                }
+            }
 
+           $contenu = '<h1> Modification de profile Patient</h1><p>
 
-                                            }    
-                                        } 
-    $contenu .='                    <button type="submit" class="btn btn-primary ">Mettre a jour</button>
-                              </form>
+                    <div class="container contact">
+                       
+                    <form action="Updatepatient" methode="Post">
+
+                   
+                                
+                         <h3 class="text-center">'.$Name.'</h3><br>
+
+                         <div class="form-row">
+                            
+                            <div class="form-group col-md-6">
+                                <label for="Profession">Profession : </label>
+                                <input type="text" class="form-control" name="profession" required value="'.$profession.'">
                             </div>
-                        </div>
-                    </div>
-               </div>';       
 
+                            <div class="form-group col-md-6">
+                                <label for="Age">Age : </label>
+                                <input type="text" class="form-control" name="Age" required value="'.$age.'">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="Adresse">Adresse : </label>
+                                <input type="text" class="form-control" name="adresse" required value="'.$adresse.'">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="gsm">N° GSM : </label>
+                                <input type="text" class="form-control" name="gsm" required value="'.$gsm.'">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="mutuelle">Mutuelle : </label>
+                                <input type="text" class="form-control" name="mutuelle" required value="'.$mutuelle.'">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label for="dteRV">Date Rendez-vous : </label>
+                                <input type="text" class="form-control" name="dteRV" required value="'.$dte.'">
+                             </div>
+
+                             
+                            <div class="form-group col-md-6">
+                                <label for="heureRV">Heure Rendez-vous : </label>
+                                <input type="text" class="form-control" name="heureRV" required value="'.$heure.'">
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Mettre a jour</button>
+
+                   </form>';
+       
    
     return $contenu;
 
  }
 // mettre a jour les infos d'un patient
 
-function afficher_Updatepatient() {
+function afficher_updatepatient() {
 
     return '<h1>les informations Modifier avec succés<h1>';
 }
@@ -542,9 +550,9 @@ function afficher_supprimer() {
 // *** fonction controle page contact ***
 function afficher_Contact() {
 
-    $result= '<h1> Bienvenu au contact</h1>';
+    $contenu= '<h1> Bienvenu au contact</h1>';
 
-    $result .='<div class="container contact">
+    $contenu .='<div class="container contact">
     <h1 class="text-center">Contactez-Nous !</h1>
     <form>
           <div class="form-row">
@@ -577,7 +585,7 @@ function afficher_Contact() {
           <button type="submit" class="btn btn-success">Envoyer</button>
         </form>';
 
-    return $result;
+    return $contenu;
 }
 
 ?>
