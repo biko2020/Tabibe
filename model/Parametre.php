@@ -13,6 +13,7 @@ class Parametre extends Model {
 
     public function getTableName($table) {
         $this->table = $table;
+        
     }
 
     /**
@@ -43,7 +44,7 @@ class Parametre extends Model {
                 ':dte'    => $dte,
                 ':heure'  => $heure
             ));
-
+          
             if($var){
                return TRUE;
             } else {
@@ -58,6 +59,47 @@ class Parametre extends Model {
         
 
     }
+
+
+ /**
+
+     * @param dte
+     * @param heure
+     * @return array tableau contenant les infos des users
+     * @return TRUE
+     * @return FALSE 
+     * @return NULL
+     */
+
+    public function createRendezVous($dte,$heure) {
+       
+        $sql = "INSERT INTO rendezvous (dte,heure) VALUES (:dte,:heure)";
+        
+        try {
+            $result = $this->_connexion->prepare($sql);
+           
+            $var = $result->execute(array(
+
+                ':dte'    => $dte,
+                ':heure'  => $heure
+            ));
+           
+            if($var){
+               return TRUE;
+               
+            } else {
+                return FALSE;                                  
+            }
+            
+        } catch (PDOException $th) {
+            
+                return NULL;
+               
+        }
+        
+
+    }
+
 
     # selection des file d'attente 
  
@@ -83,6 +125,30 @@ class Parametre extends Model {
         }   
 
     }
+
+    public function getRendezVous() {
+
+        $sql = "SELECT * FROM $this->table";
+
+        try {
+
+            $result = $this->_connexion->prepare($sql);
+            $var = $result->execute();
+            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+
+                if($var) {
+                    return $data;
+                } else {
+                    return FALSE;
+                }
+
+        } catch (PDOException $th) {
+
+            return NULL;
+        }   
+
+    }
+
 
     # Creer des sessions pour les medecins
        /**
@@ -158,6 +224,69 @@ class Parametre extends Model {
 
     }
 
+//********** */ supprimer un rendez vous
+    public function deleteRendezVous($id) {
+
+
+        $sql = "DELETE FROM $this->table";
+
+        try {
+            
+            if (!is_null($id)) {
+
+                $sql .= ' WHERE idPatients =  ? ';
+
+            }
+
+            $result = $this->_connexion->prepare($sql);
+            $var    = $result->execute(array($id));
+           
+
+            if($var) {
+                return '<h1>Enregistrement Patient supprimer</h2>';
+            }    else {              
+                return false;
+            }
+
+        } catch (PDOException $th) {
+            return null;
+        } 
+
+    }
+
+// selectionne un patient par son Id
+
+    public function selectPationById($id) {
+
+        $sql = "SELECT * FROM $this->table";
+
+        try {
+
+            if(!is_null($id)) {
+                $sql .= ' WHERE idPatients = ? ';
+            }
+
+            $result = $this->_connexion->prepare($sql);
+            $var = $result->execute([$id]);
+            $data = $result->fetchAll(PDO::FETCH_ASSOC);
+
+                if($var) {
+                    return $data;
+                } else {
+                    return FALSE;
+                }
+
+        } catch (PDOException $th) {
+
+            return NULL;
+        }   
+    }
+    
+
+    
+    public function updateOnePatient() {
+
+    }
 
 } # ------fermeture class
 
